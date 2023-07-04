@@ -1,36 +1,36 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigators/GameNavigator";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  "Settings"
+  "Home"
 >;
 
-function HomeScreen({ navigation }: { navigation: HomeScreenNavigationProp }) {
-  const onPressSettings = () => navigation.navigate("Settings");
-  const onPressGame = () => navigation.navigate("Game");
+const GameScreen = ({
+  navigation,
+}: {
+  navigation: HomeScreenNavigationProp;
+}) => {
+  const onPress = () => navigation.navigate("Home");
+
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Match Game</Text>
-      <View style={styles.appButtonContainer}>
-        <TouchableOpacity>
-          <Text style={styles.appButtonText} onPress={onPressGame}>
-            Start
-          </Text>
-        </TouchableOpacity>
+      <View style={styles.circle}>
+        <Text style={styles.headerText}>25</Text>
       </View>
+
       <View style={styles.appButtonContainer}>
         <TouchableOpacity>
-          <Text style={styles.appButtonText} onPress={onPressSettings}>
-            Settings
+          <Text style={styles.appButtonText} onPress={onPress}>
+            Menu
           </Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 30,
     paddingBottom: 10,
+    textAlign: "center",
   },
   appButtonContainer: {
     elevation: 8,
@@ -50,10 +51,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    width: "60%",
-    marginTop: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    width: "40%",
+    marginTop: 700,
   },
   appButtonText: {
     fontSize: 20,
@@ -63,6 +62,16 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     textAlign: "center",
   },
+  circle: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: "#ffbd03",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+  },
 });
 
-export default HomeScreen;
+export default GameScreen;

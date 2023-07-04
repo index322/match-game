@@ -4,7 +4,13 @@ import { StatusBar } from "expo-status-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
 import SettingScreen from "../screens/SettingScreen";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import GameScreen from "../screens/GameScreen";
+
+export type RootStackParamList = {
+  Home: undefined;
+  Settings: undefined;
+  Game: undefined;
+};
 
 const GameNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -22,6 +28,11 @@ const GameNavigator = () => {
         <Stack.Screen
           name="Settings"
           component={SettingScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Game"
+          component={GameScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

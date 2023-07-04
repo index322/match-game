@@ -6,8 +6,19 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
+import { RootStackParamList } from "../navigators/GameNavigator";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-const SettingScreen = ({ navigation }) => {
+type HomeScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Home"
+>;
+
+const SettingScreen = ({
+  navigation,
+}: {
+  navigation: HomeScreenNavigationProp;
+}) => {
   const onPress = () => navigation.navigate("Home");
 
   const [matches, setMatches] = useState("");
