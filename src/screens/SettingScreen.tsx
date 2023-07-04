@@ -5,11 +5,15 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../navigators/GameNavigator";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { getUserStartFirst, saveUserStartFirst } from "../storage/setting";
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
+type HomeScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Home" | "Game"
+>;
 
 const SettingScreen = ({
   navigation,
@@ -19,19 +23,39 @@ const SettingScreen = ({
   const onPress = () => navigation.goBack();
 
   const [matches, setMatches] = useState("");
+  const [matchError, setMatchError] = useState("");
+  const [isUserFirst, setIsUserFirst] = useState(true);
+
+  const handleMatchChange = (text) => {
+    const value = Number(text);
+    if (isNaN(value) || value < 1 || value > 50) {
+      setMatchError("Please enter a valid number of matches (1-50)."); // fix this
+    } else {
+      setMatches(value);
+      setMatchError("");
+    }
+  };
+
+  const onPressUserFirst = () => {
+    setIsUserFirst(!isUserFirst);
+    saveUserStartFirst(!isUserFirst);
+  };
+
+  useEffect(() => {
+    getUserStartFirst().then((userStartFirst) => {
+      setIsUserFirst(userStartFirst);
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>How start First?</Text>
 
       <View style={styles.appButtonContainer}>
-        <TouchableOpacity>
-          <Text style={styles.appButtonText}>You</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.appButtonContainer}>
-        <TouchableOpacity>
-          <Text style={styles.appButtonText}>Computer</Text>
+        <TouchableOpacity onPress={onPressUserFirst}>
+          <Text style={styles.appButtonText}>
+            {isUserFirst ? "You" : "Computer"}
+          </Text>
         </TouchableOpacity>
       </View>
 

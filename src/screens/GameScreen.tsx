@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigators/GameNavigator";
 
@@ -14,6 +14,11 @@ export type GameScreenProps = {
 
 const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
   const { isUserFirst, numberOfMatches, maxMatchesPerRound } = route.params;
+  const [matchesLeft, setMatchesLeft] = useState(numberOfMatches);
+  const [currentUserMatches, setCurrentUserMatches] = useState(0);
+  const [computerMatches, setComputerMatches] = useState(0);
+  const [userTurn, setUserTurn] = useState(isUserFirst);
+
   const onPress = () => navigation.goBack();
 
   return (

@@ -12,6 +12,18 @@ const HomeScreen = ({
 }: {
   navigation: HomeScreenNavigationProp;
 }) => {
+  // const startGame = () => {
+  //   if (matchError === "" && matches !== "") {
+  //     navigation.navigate("Game", {
+  //       numberOfMatches: Number(matches),
+  //       maxMatchesPerRound: matches - 1,
+  //       isUserFirst: isUserFirst,
+  //     });
+  //   } else {
+  //     alert("Please correct the errors before starting the game.");
+  //   }
+  // };
+
   const onPressSettings = () => navigation.navigate("Settings");
   const onPressGame = () =>
     navigation.navigate("Game", {
