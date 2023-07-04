@@ -7,19 +7,16 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { RootStackParamList } from "../navigators/GameNavigator";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "Home"
->;
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
 
 const SettingScreen = ({
   navigation,
 }: {
   navigation: HomeScreenNavigationProp;
 }) => {
-  const onPress = () => navigation.navigate("Home");
+  const onPress = () => navigation.goBack();
 
   const [matches, setMatches] = useState("");
 

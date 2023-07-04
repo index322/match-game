@@ -1,19 +1,20 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React from "react";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, { FC } from "react";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigators/GameNavigator";
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "Home"
->;
+type GameScreenNavigationProp = NavigationProp<RootStackParamList>;
 
-const GameScreen = ({
-  navigation,
-}: {
-  navigation: HomeScreenNavigationProp;
-}) => {
-  const onPress = () => navigation.navigate("Home");
+type GameScreenRouteProp = RouteProp<RootStackParamList, "Game">;
+
+export type GameScreenProps = {
+  navigation: GameScreenNavigationProp;
+  route: GameScreenRouteProp;
+};
+
+const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
+  const { isUserFirst, numberOfMatches, maxMatchesPerRound } = route.params;
+  const onPress = () => navigation.goBack();
 
   return (
     <View style={styles.container}>
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 20,
   },
@@ -52,7 +53,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     width: "40%",
-    marginTop: 700,
   },
   appButtonText: {
     fontSize: 20,
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     borderColor: "#ffbd03",
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
   },
 });
 

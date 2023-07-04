@@ -1,16 +1,24 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigators/GameNavigator";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<
+type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Settings"
 >;
-
-function HomeScreen({ navigation }: { navigation: HomeScreenNavigationProp }) {
+const HomeScreen = ({
+  navigation,
+}: {
+  navigation: HomeScreenNavigationProp;
+}) => {
   const onPressSettings = () => navigation.navigate("Settings");
-  const onPressGame = () => navigation.navigate("Game");
+  const onPressGame = () =>
+    navigation.navigate("Game", {
+      isUserFirst: true,
+      numberOfMatches: 25,
+      maxMatchesPerRound: 3,
+    });
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Match Game</Text>
@@ -30,7 +38,7 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNavigationProp }) {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
