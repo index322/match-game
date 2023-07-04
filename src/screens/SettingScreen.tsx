@@ -1,26 +1,50 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+} from "react-native";
+import React, { useState } from "react";
 
-function HomeScreen({ navigation }) {
-  const onPress = () => navigation.navigate("Settings");
+const SettingScreen = ({ navigation }) => {
+  const onPress = () => navigation.navigate("Home");
+
+  const [matches, setMatches] = useState("");
+
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Match Game</Text>
+      <Text style={styles.headerText}>How start First?</Text>
+
       <View style={styles.appButtonContainer}>
         <TouchableOpacity>
-          <Text style={styles.appButtonText}>Start</Text>
+          <Text style={styles.appButtonText}>You</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.appButtonContainer}>
         <TouchableOpacity>
+          <Text style={styles.appButtonText}>Computer</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.headerText}>How much matches?</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={setMatches}
+        value={matches}
+        placeholder="Write the number of matches"
+        keyboardType="numeric"
+      />
+      <View style={styles.appButtonContainer}>
+        <TouchableOpacity>
           <Text style={styles.appButtonText} onPress={onPress}>
-            Settings
+            Back
           </Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -41,7 +65,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     width: "60%",
-    marginTop: 10,
+    marginTop: 8,
+    marginBottom: 8,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -53,6 +78,12 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     textAlign: "center",
   },
+  input: {
+    height: 50,
+    margin: 8,
+    borderWidth: 1,
+    padding: 8,
+  },
 });
 
-export default HomeScreen;
+export default SettingScreen;

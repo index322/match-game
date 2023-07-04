@@ -3,26 +3,25 @@ import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-const Stack = createNativeStackNavigator();
+import SettingScreen from "../screens/SettingScreen";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 const GameNavigator = () => {
-  const { top, bottom } = useSafeAreaInsets();
+  const Stack = createNativeStackNavigator();
+
+  // const { top, bottom } = useSafeAreaInsets();
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingTop: top,
-        paddingBottom: bottom,
-        backgroundColor: "white",
-      }}
-    >
+    <View style={styles.container}>
       <StatusBar style="auto" />
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
           component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Settings"
+          component={SettingScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
@@ -31,7 +30,10 @@ const GameNavigator = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
 });
 
 export default GameNavigator;
