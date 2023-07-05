@@ -3,6 +3,7 @@ import React from "react";
 import { RootStackParamList } from "../navigators/GameNavigator";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { getNumberOfMatches, getUserStartFirst } from "../storage/setting";
+import MainButton from "../components/MainButton";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -33,16 +34,8 @@ const HomeScreen = ({
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Match Game</Text>
-      <TouchableOpacity onPress={onPressGame} style={styles.appButtonContainer}>
-        <Text style={styles.appButtonText}>▶️ Start</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={onPressSettings}
-        style={styles.appButtonContainer}
-      >
-        <Text style={styles.appButtonText}>⚙️ Settings</Text>
-      </TouchableOpacity>
+      <MainButton onPress={onPressGame} buttonText="▶️ Start" />
+      <MainButton onPress={onPressSettings} buttonText="⚙️ Settings" />
     </View>
   );
 };

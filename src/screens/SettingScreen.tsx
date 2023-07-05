@@ -16,6 +16,7 @@ import {
   saveNumberOfMatches,
   getNumberOfMatches,
 } from "../storage/setting";
+import Input from "../components/Input";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -84,8 +85,7 @@ const SettingScreen = ({
       </TouchableOpacity>
 
       <Text style={styles.headerText}>Number of much matches</Text>
-      <TextInput
-        style={styles.input}
+      <Input
         onChangeText={setMatches}
         value={matches}
         placeholder="Write the number of matches"
@@ -137,13 +137,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     textTransform: "uppercase",
     textAlign: "center",
-  },
-  input: {
-    height: 50,
-    width: "60%",
-    margin: 8,
-    borderWidth: 1,
-    padding: 8,
   },
 });
 

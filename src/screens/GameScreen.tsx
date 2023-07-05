@@ -10,6 +10,9 @@ import React, { FC, useState, useEffect } from "react";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigators/GameNavigator";
 import { getComputerMatchesTurn } from "../ai/logic";
+import ButtonToTake from "../components/ButtonToTake";
+import MainButton from "../components/MainButton";
+import Input from "../components/Input";
 
 type GameScreenNavigationProp = NavigationProp<RootStackParamList>;
 
@@ -106,36 +109,29 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
         Computer's Matches: {computerMatches}
       </Text>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={styles.appButtonContainerToTake}
+        <ButtonToTake
           onPress={() => takeUserTurn(1)}
           disabled={!userTurn || matchesLeft === 0}
-        >
-          <Text style={styles.appButtonText}>Take 1</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.appButtonContainerToTake}
+          buttonText="Take 1"
+        />
+        <ButtonToTake
           onPress={() => takeUserTurn(2)}
           disabled={!userTurn || matchesLeft === 0}
-        >
-          <Text style={styles.appButtonText}>Take 2</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.appButtonContainerToTake}
+          buttonText="Take 2"
+        />
+        <ButtonToTake
           onPress={() => takeUserTurn(3)}
           disabled={!userTurn || matchesLeft === 0}
-        >
-          <Text style={styles.appButtonText}>Take 3</Text>
-        </TouchableOpacity>
+          buttonText="Take 3"
+        />
       </View>
-
-      <TextInput
-        style={styles.input}
+      <Input
         onChangeText={handleCustomMatchesChange}
         value={customMatches.toString()}
         placeholder="Enter number"
         keyboardType="numeric"
       />
+
       <TouchableOpacity
         style={styles.appButtonContainer}
         onPress={takeCustomTurn}
@@ -144,17 +140,8 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
         <Text style={styles.appButtonText}>Take Custom</Text>
       </TouchableOpacity>
 
-      {gameOver && (
-        <TouchableOpacity
-          style={styles.appButtonContainer}
-          onPress={restartGame}
-        >
-          <Text style={styles.appButtonText}>🔄 Restart</Text>
-        </TouchableOpacity>
-      )}
-      <TouchableOpacity style={styles.appButtonContainer} onPress={onPressBack}>
-        <Text style={styles.appButtonText}>🔙 Menu</Text>
-      </TouchableOpacity>
+      {gameOver && <MainButton onPress={restartGame} buttonText="🔄 Restart" />}
+      <MainButton onPress={onPressBack} buttonText="🔙 Menu" />
     </View>
   );
 };
@@ -172,22 +159,14 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     textAlign: "center",
   },
-  appButtonContainerToTake: {
-    elevation: 8,
-    backgroundColor: "#ffbd03",
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    width: "30%",
-    marginHorizontal: 2,
-  },
+
   appButtonContainer: {
     elevation: 8,
     backgroundColor: "#ffbd03",
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    width: "50%",
+    width: "60%",
     marginHorizontal: 2,
   },
   appButtonText: {
@@ -215,13 +194,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.25,
     elevation: 8,
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    width: "50%",
   },
   buttonsContainer: {
     flexDirection: "row",
