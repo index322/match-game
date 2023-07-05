@@ -20,6 +20,7 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
   const [currentUserMatches, setCurrentUserMatches] = useState(0);
   const [computerMatches, setComputerMatches] = useState(0);
   const [userTurn, setUserTurn] = useState(isUserFirst);
+  const [gameOver, setGameOver] = useState(false);
 
   const takeMatches = (matches: number) => {
     setMatchesLeft(matchesLeft - matches);
@@ -31,6 +32,22 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
     }
   };
 
+  const restartGame = () => {
+    setMatchesLeft(numberOfMatches);
+    setCurrentUserMatches(0);
+    setComputerMatches(0);
+    setUserTurn(isUserFirst);
+    setGameOver(false);
+  };
+
+  useEffect(() => {
+    if (matchesLeft === 0) {
+      const winner = currentUserMatches % 2 === 0 ? "User" : "Computer";
+      alert(`Game Over! ${winner} Wins! 🎊`);
+      setGameOver(true);
+    }
+  }, [matchesLeft]);
+
   useEffect(() => {
     if (userTurn) {
       return;
@@ -38,7 +55,7 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
       setTimeout(() => {
         takeMatches(getComputerMatchesTurn(matchesLeft, maxMatchesPerRound));
         setUserTurn(true);
-      }, 1000);
+      }, 500);
     }
   }, [userTurn]);
 
@@ -52,13 +69,6 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
     setUserTurn(false);
   };
 
-  useEffect(() => {
-    if (matchesLeft === 0) {
-      const winner = currentUserMatches % 2 === 0 ? "User" : "Computer";
-      alert(`Game Over. ${winner} Wins.`);
-    }
-  }, [matchesLeft]);
-
   const onPressBack = () => navigation.goBack();
 
   return (
@@ -67,26 +77,41 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
         <Text style={styles.headerText}>{matchesLeft}</Text>
         <Text style={styles.headerText}>🔥</Text>
       </View>
-      <Text>Your Matches: {currentUserMatches}</Text>
-      <Text>Computer's Matches: {computerMatches}</Text>
+      <Text style={styles.headerText}>Your Matches: {currentUserMatches}</Text>
+      <Text style={styles.headerText}>
+        Computer's Matches: {computerMatches}
+      </Text>
       <View style={styles.buttonsContainer}>
-        <Button
-          title="Take 1"
+        <TouchableOpacity
+          style={styles.appButtonContainer}
           onPress={() => takeUserTurn(1)}
           disabled={!userTurn || matchesLeft === 0}
-        />
-        <Button
-          title="Take 2"
+        >
+          <Text style={styles.appButtonText}>Take 1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.appButtonContainer}
           onPress={() => takeUserTurn(2)}
-          disabled={!userTurn || matchesLeft < 2}
-        />
-        <Button
-          title="Take 3"
+          disabled={!userTurn || matchesLeft === 0}
+        >
+          <Text style={styles.appButtonText}>Take 2</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.appButtonContainer}
           onPress={() => takeUserTurn(3)}
-          disabled={!userTurn || matchesLeft < 3}
-        />
+          disabled={!userTurn || matchesLeft === 0}
+        >
+          <Text style={styles.appButtonText}>Take 3</Text>
+        </TouchableOpacity>
       </View>
-
+      {gameOver && (
+        <TouchableOpacity
+          style={styles.appButtonContainer}
+          onPress={restartGame}
+        >
+          <Text style={styles.appButtonText}>Restart</Text>
+        </TouchableOpacity>
+      )}
       <TouchableOpacity style={styles.appButtonContainer} onPress={onPressBack}>
         <Text style={styles.appButtonText}>Menu</Text>
       </TouchableOpacity>
@@ -103,7 +128,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   headerText: {
-    fontSize: 30,
+    fontSize: 25,
     paddingBottom: 10,
     textAlign: "center",
   },
@@ -113,7 +138,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12,
-    width: "40%",
+    width: "30%",
+    marginHorizontal: 2,
   },
   appButtonText: {
     fontSize: 20,
@@ -127,10 +153,19 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    borderWidth: 2,
+    borderWidth: 5,
     borderColor: "#ffbd03",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.25,
+    elevation: 8,
   },
   input: {
     height: 40,

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   Alert,
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../navigators/GameNavigator";
@@ -48,6 +49,7 @@ const SettingScreen = ({
       }
 
       saveNumberOfMatches(matches);
+      Keyboard.dismiss();
     }
   };
 
@@ -138,6 +140,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
+    width: "60%",
     margin: 8,
     borderWidth: 1,
     padding: 8,
