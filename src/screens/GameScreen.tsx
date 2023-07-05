@@ -1,14 +1,8 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Button,
-  TextInput,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Button } from "react-native";
 import React, { FC, useState, useEffect } from "react";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigators/GameNavigator";
+import { getComputerMatchesTurn } from "../ai/logic";
 
 type GameScreenNavigationProp = NavigationProp<RootStackParamList>;
 
@@ -21,23 +15,13 @@ export type GameScreenProps = {
 
 const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
   const { isUserFirst, numberOfMatches, maxMatchesPerRound } = route.params;
+
   const [matchesLeft, setMatchesLeft] = useState(numberOfMatches);
   const [currentUserMatches, setCurrentUserMatches] = useState(0);
   const [computerMatches, setComputerMatches] = useState(0);
   const [userTurn, setUserTurn] = useState(isUserFirst);
-  const [n, setN] = useState(2);
-  const [m, setM] = useState(3);
 
-  const computeMatchesToTake = () => {
-    let matchesToTake = matchesLeft % (m + 1);
-    if (matchesToTake === 0) {
-      matchesToTake = 1;
-    }
-    return matchesToTake;
-  };
-
-  const takeMatches = (matches) => {
-    setUserTurn(!userTurn);
+  const takeMatches = (matches: number) => {
     setMatchesLeft(matchesLeft - matches);
 
     if (userTurn) {
@@ -48,12 +32,25 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    if (!userTurn) {
+    if (userTurn) {
+      return;
+    } else {
       setTimeout(() => {
-        takeMatches(computeMatchesToTake());
-      }, 1000); // AI takes its turn after 2 seconds
+        takeMatches(getComputerMatchesTurn(matchesLeft, maxMatchesPerRound));
+        setUserTurn(true);
+      }, 1000);
     }
   }, [userTurn]);
+
+  const takeUserTurn = (matches: number) => {
+    if (!userTurn) {
+      return;
+    }
+
+    takeMatches(matches);
+
+    setUserTurn(false);
+  };
 
   useEffect(() => {
     if (matchesLeft === 0) {
@@ -62,43 +59,37 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
     }
   }, [matchesLeft]);
 
-  const onPress = () => navigation.goBack();
+  const onPressBack = () => navigation.goBack();
 
   return (
     <View style={styles.container}>
       <View style={styles.circle}>
         <Text style={styles.headerText}>{matchesLeft}</Text>
+        <Text style={styles.headerText}>🔥</Text>
       </View>
       <Text>Your Matches: {currentUserMatches}</Text>
       <Text>Computer's Matches: {computerMatches}</Text>
-      <View>
-        {userTurn && (
-          <View>
-            <Button
-              title="Take 1"
-              onPress={() => takeMatches(1)}
-              disabled={matchesLeft === 0}
-            />
-            <Button
-              title="Take 2"
-              onPress={() => takeMatches(2)}
-              disabled={matchesLeft < 2}
-            />
-            <Button
-              title="Take 3"
-              onPress={() => takeMatches(3)}
-              disabled={matchesLeft < 3}
-            />
-          </View>
-        )}
+      <View style={styles.buttonsContainer}>
+        <Button
+          title="Take 1"
+          onPress={() => takeUserTurn(1)}
+          disabled={!userTurn || matchesLeft === 0}
+        />
+        <Button
+          title="Take 2"
+          onPress={() => takeUserTurn(2)}
+          disabled={!userTurn || matchesLeft < 2}
+        />
+        <Button
+          title="Take 3"
+          onPress={() => takeUserTurn(3)}
+          disabled={!userTurn || matchesLeft < 3}
+        />
       </View>
-      <View style={styles.appButtonContainer}>
-        <TouchableOpacity>
-          <Text style={styles.appButtonText} onPress={onPress}>
-            Menu
-          </Text>
-        </TouchableOpacity>
-      </View>
+
+      <TouchableOpacity style={styles.appButtonContainer} onPress={onPressBack}>
+        <Text style={styles.appButtonText}>Menu</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -146,6 +137,9 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+  },
+  buttonsContainer: {
+    flexDirection: "row",
   },
 });
 

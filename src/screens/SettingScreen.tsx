@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../navigators/GameNavigator";
@@ -25,19 +26,28 @@ const SettingScreen = ({
 }: {
   navigation: HomeScreenNavigationProp;
 }) => {
-  const onPress = () => navigation.goBack();
+  const onPressBack = () => navigation.goBack();
 
   const [matches, setMatches] = useState("");
-  const [matchError, setMatchError] = useState("");
   const [isUserFirst, setIsUserFirst] = useState(true);
 
-  const handleMatchChange = (text: string) => {
-    const value = Number(text);
-    if (isNaN(value) || value < 1 || value > 1000) {
-      setMatchError("Please enter a valid number of matches (1-1000).");
+  const showInvalidMatchesInputError = () => {
+    Alert.alert("Please enter valid number of matches");
+  };
+
+  const handleMatchNumberSave = () => {
+    const matchesNumber = Number(matches);
+
+    if (Number.isNaN(matchesNumber)) {
+      showInvalidMatchesInputError();
+      setMatches("");
     } else {
-      setMatches(value.toString());
-      setMatchError("");
+      if (matchesNumber % 2 === 0) {
+        Alert.alert("Number of matches should be odd");
+        return;
+      }
+
+      saveNumberOfMatches(matches);
     }
   };
 
@@ -53,56 +63,43 @@ const SettingScreen = ({
   }, []);
 
   useEffect(() => {
-    const saveMatches = async () => {
-      await saveNumberOfMatches(matches.toString());
-    };
-
-    saveMatches();
-  }, [matches]);
-
-  useEffect(() => {
-    const retrieveMatches = async () => {
-      try {
-        const numberOfMatches = await getNumberOfMatches();
-        if (numberOfMatches) {
-          setMatches(numberOfMatches.toString());
-        }
-      } catch (error) {
-        console.log("Error retrieving number of matches:", error);
-      }
-    };
-
-    retrieveMatches();
+    getNumberOfMatches().then((matches) => {
+      setMatches(matches.toString());
+    });
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>How start First</Text>
 
-      <View style={styles.appButtonContainer}>
-        <TouchableOpacity onPress={onPressUserFirst}>
-          <Text style={styles.appButtonText}>
-            {isUserFirst ? "You" : "Computer"}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={styles.appButtonContainer}
+        onPress={onPressUserFirst}
+      >
+        <Text style={styles.appButtonText}>
+          {isUserFirst ? "🧑 You" : "🤖 Computer"}
+        </Text>
+      </TouchableOpacity>
 
       <Text style={styles.headerText}>Number of much matches</Text>
-      <Text>Current amount {matches}</Text>
       <TextInput
         style={styles.input}
-        onChangeText={handleMatchChange}
+        onChangeText={setMatches}
         value={matches}
         placeholder="Write the number of matches"
         keyboardType="numeric"
       />
-      <View style={styles.appButtonContainer}>
-        <TouchableOpacity>
-          <Text style={styles.appButtonText} onPress={onPress}>
-            Back
-          </Text>
-        </TouchableOpacity>
-      </View>
+
+      <TouchableOpacity
+        style={styles.appButtonContainer}
+        onPress={handleMatchNumberSave}
+      >
+        <Text style={styles.appButtonText}>Save match number</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.appButtonContainer} onPress={onPressBack}>
+        <Text style={styles.appButtonText}>🔙 Back</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -116,7 +113,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   headerText: {
-    fontSize: 30,
+    fontSize: 25,
     paddingBottom: 10,
   },
   appButtonContainer: {

@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { RootStackParamList } from "../navigators/GameNavigator";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { getNumberOfMatches, getUserStartFirst } from "../storage/setting";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -12,32 +13,36 @@ const HomeScreen = ({
 }: {
   navigation: HomeScreenNavigationProp;
 }) => {
-  
-
   const onPressSettings = () => navigation.navigate("Settings");
-  const onPressGame = () =>
+
+  const onPressGame = async () => {
+    console.log("game pressed");
+
+    const isUserFirst = await getUserStartFirst();
+    const numberOfMatches = await getNumberOfMatches();
+
+    console.log("retrieved values");
+
     navigation.navigate("Game", {
-      isUserFirst: true,
-      numberOfMatches: 25,
+      isUserFirst: isUserFirst,
+      numberOfMatches: numberOfMatches,
       maxMatchesPerRound: 3,
     });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Match Game</Text>
-      <View style={styles.appButtonContainer}>
-        <TouchableOpacity>
-          <Text style={styles.appButtonText} onPress={onPressGame}>
-            Start
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.appButtonContainer}>
-        <TouchableOpacity>
-          <Text style={styles.appButtonText} onPress={onPressSettings}>
-            Settings
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={onPressGame} style={styles.appButtonContainer}>
+        <Text style={styles.appButtonText}>▶️ Start</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={onPressSettings}
+        style={styles.appButtonContainer}
+      >
+        <Text style={styles.appButtonText}>⚙️ Settings</Text>
+      </TouchableOpacity>
     </View>
   );
 };
