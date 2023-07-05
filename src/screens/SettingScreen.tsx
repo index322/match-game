@@ -1,11 +1,11 @@
 import {
-  View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
   Alert,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../navigators/GameNavigator";
@@ -72,7 +72,11 @@ const SettingScreen = ({
   }, []);
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={100}
+    >
       <Text style={styles.headerText}>How start First</Text>
 
       <TouchableOpacity
@@ -102,13 +106,13 @@ const SettingScreen = ({
       <TouchableOpacity style={styles.appButtonContainer} onPress={onPressBack}>
         <Text style={styles.appButtonText}>🔙 Back</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",

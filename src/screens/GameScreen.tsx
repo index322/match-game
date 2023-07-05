@@ -4,7 +4,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Keyboard,
-  TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { FC, useState, useEffect } from "react";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
@@ -99,7 +100,11 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
   const onPressBack = () => navigation.goBack();
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={100}
+    >
       <View style={styles.circle}>
         <Text style={styles.headerText}>{matchesLeft}</Text>
         <Text style={styles.headerText}>🔥</Text>
@@ -142,20 +147,20 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
 
       {gameOver && <MainButton onPress={restartGame} buttonText="🔄 Restart" />}
       <MainButton onPress={onPressBack} buttonText="🔙 Menu" />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "white",
     justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 20,
   },
   headerText: {
-    fontSize: 25,
+    fontSize: 20,
     paddingBottom: 10,
     textAlign: "center",
   },
