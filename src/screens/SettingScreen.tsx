@@ -8,7 +8,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../navigators/GameNavigator";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { getUserStartFirst, saveUserStartFirst } from "../storage/setting";
+import {
+  getUserStartFirst,
+  saveUserStartFirst,
+  saveNumberOfMatches,
+  getNumberOfMatches,
+} from "../storage/setting";
 
 type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -26,12 +31,12 @@ const SettingScreen = ({
   const [matchError, setMatchError] = useState("");
   const [isUserFirst, setIsUserFirst] = useState(true);
 
-  const handleMatchChange = (text) => {
+  const handleMatchChange = (text: string) => {
     const value = Number(text);
-    if (isNaN(value) || value < 1 || value > 50) {
-      setMatchError("Please enter a valid number of matches (1-50)."); // fix this
+    if (isNaN(value) || value < 1 || value > 1000) {
+      setMatchError("Please enter a valid number of matches (1-1000).");
     } else {
-      setMatches(value);
+      setMatches(value.toString());
       setMatchError("");
     }
   };
@@ -47,9 +52,32 @@ const SettingScreen = ({
     });
   }, []);
 
+  useEffect(() => {
+    const saveMatches = async () => {
+      await saveNumberOfMatches(matches.toString());
+    };
+
+    saveMatches();
+  }, [matches]);
+
+  useEffect(() => {
+    const retrieveMatches = async () => {
+      try {
+        const numberOfMatches = await getNumberOfMatches();
+        if (numberOfMatches) {
+          setMatches(numberOfMatches.toString());
+        }
+      } catch (error) {
+        console.log("Error retrieving number of matches:", error);
+      }
+    };
+
+    retrieveMatches();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>How start First?</Text>
+      <Text style={styles.headerText}>How start First</Text>
 
       <View style={styles.appButtonContainer}>
         <TouchableOpacity onPress={onPressUserFirst}>
@@ -59,10 +87,11 @@ const SettingScreen = ({
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.headerText}>How much matches?</Text>
+      <Text style={styles.headerText}>Number of much matches</Text>
+      <Text>Current amount {matches}</Text>
       <TextInput
         style={styles.input}
-        onChangeText={setMatches}
+        onChangeText={handleMatchChange}
         value={matches}
         placeholder="Write the number of matches"
         keyboardType="numeric"

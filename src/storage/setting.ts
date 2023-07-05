@@ -14,3 +14,22 @@ export const getUserStartFirst = async () => {
     return true;
   }
 };
+
+export const saveNumberOfMatches = async (value: string) => {
+  try {
+    await AsyncStorage.setItem("numberOfMatches", value);
+    console.log("Number of Matches stored", value);
+  } catch (error) {
+    console.log("Error saving number of Matches:", error);
+  }
+};
+export const getNumberOfMatches = async () => {
+  const value = await AsyncStorage.getItem("numberOfMatches");
+  if (value !== null) {
+    console.log("Retrieved number of Matches", value);
+    return Number(value);
+  } else {
+    console.log("No Number of Matches found.");
+    return 25;
+  }
+};
