@@ -1,4 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, Button } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Keyboard,
+  TextInput,
+} from "react-native";
 import React, { FC, useState, useEffect } from "react";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigators/GameNavigator";
@@ -17,6 +24,7 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
   const { isUserFirst, numberOfMatches, maxMatchesPerRound } = route.params;
 
   const [matchesLeft, setMatchesLeft] = useState(numberOfMatches);
+  const [customMatches, setCustomMatches] = useState(0);
   const [currentUserMatches, setCurrentUserMatches] = useState(0);
   const [computerMatches, setComputerMatches] = useState(0);
   const [userTurn, setUserTurn] = useState(isUserFirst);
@@ -30,6 +38,22 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
     } else {
       setComputerMatches(computerMatches + matches);
     }
+  };
+
+  const handleCustomMatchesChange = (text: string) => {
+    const input = parseInt(text, 10);
+    setCustomMatches(isNaN(input) ? 0 : input);
+  };
+
+  const takeCustomTurn = () => {
+    if (!userTurn || customMatches > matchesLeft) {
+      return;
+    }
+
+    takeMatches(customMatches);
+
+    setUserTurn(false);
+    Keyboard.dismiss();
   };
 
   const restartGame = () => {
@@ -83,37 +107,53 @@ const GameScreen: FC<GameScreenProps> = ({ navigation, route }) => {
       </Text>
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
-          style={styles.appButtonContainer}
+          style={styles.appButtonContainerToTake}
           onPress={() => takeUserTurn(1)}
           disabled={!userTurn || matchesLeft === 0}
         >
           <Text style={styles.appButtonText}>Take 1</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.appButtonContainer}
+          style={styles.appButtonContainerToTake}
           onPress={() => takeUserTurn(2)}
           disabled={!userTurn || matchesLeft === 0}
         >
           <Text style={styles.appButtonText}>Take 2</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.appButtonContainer}
+          style={styles.appButtonContainerToTake}
           onPress={() => takeUserTurn(3)}
           disabled={!userTurn || matchesLeft === 0}
         >
           <Text style={styles.appButtonText}>Take 3</Text>
         </TouchableOpacity>
       </View>
+
+      <TextInput
+        style={styles.input}
+        onChangeText={handleCustomMatchesChange}
+        value={customMatches.toString()}
+        placeholder="Enter number"
+        keyboardType="numeric"
+      />
+      <TouchableOpacity
+        style={styles.appButtonContainer}
+        onPress={takeCustomTurn}
+        disabled={!userTurn || matchesLeft === 0}
+      >
+        <Text style={styles.appButtonText}>Take Custom</Text>
+      </TouchableOpacity>
+
       {gameOver && (
         <TouchableOpacity
           style={styles.appButtonContainer}
           onPress={restartGame}
         >
-          <Text style={styles.appButtonText}>Restart</Text>
+          <Text style={styles.appButtonText}>🔄 Restart</Text>
         </TouchableOpacity>
       )}
       <TouchableOpacity style={styles.appButtonContainer} onPress={onPressBack}>
-        <Text style={styles.appButtonText}>Menu</Text>
+        <Text style={styles.appButtonText}>🔙 Menu</Text>
       </TouchableOpacity>
     </View>
   );
@@ -132,13 +172,22 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     textAlign: "center",
   },
-  appButtonContainer: {
+  appButtonContainerToTake: {
     elevation: 8,
     backgroundColor: "#ffbd03",
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12,
     width: "30%",
+    marginHorizontal: 2,
+  },
+  appButtonContainer: {
+    elevation: 8,
+    backgroundColor: "#ffbd03",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    width: "50%",
     marginHorizontal: 2,
   },
   appButtonText: {
@@ -172,6 +221,7 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    width: "50%",
   },
   buttonsContainer: {
     flexDirection: "row",
